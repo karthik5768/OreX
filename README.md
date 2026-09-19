@@ -78,28 +78,39 @@ We built a simple and cost effective proof of concept prototype that uses an ESP
 ## Planned Hardware For Next Version
 We have the foundation for the actual prototype, which will use:
 
-- Sensors - NDIR methane sensor
-            - Electrochemical CO sensor
-            - Electrochemical H2S sensor
-            - Electrochemical/galvanic O2 sensor
-            - NDIR CO2 sensor
-            - DHT22 Temperature Sensor (used in the prototype can be improved)
-            - 6-axis IMU (Inertial Measurement Unit)
-            - Ultrasonic Sensor 
-            - PIR Sensor
-            - Barometric Sensor 
-- Microcontroller - ESP32S3 N16R8
-- Single Board Computer - Raspberry Pi 5
-- Motor Mechanics - Motor Driver 
-                  - Track Style Chassis 
-                  - high torque motors 
-                  - Servo Motor
-                  - Suspension
-- Camera - IR + Thermal + Night vision 
-- Communication - Wired
-                - LoRa (Backup)
-                - Bluetooth (Backup)
-                - Wifi 2.4G (Backup)
+### Sensors 
+- NDIR methane sensor
+- Electrochemical CO sensor
+- Electrochemical H2S sensor
+- Electrochemical/galvanic O2 sensor
+- NDIR CO2 sensor
+- DHT22 Temperature Sensor (used in the prototype can be improved)
+- 6-axis IMU (Inertial Measurement Unit)
+- Ultrasonic Sensor 
+- PIR Sensor
+- Barometric Sensor 
+
+### Microcontroller 
+- ESP32S3 N16R8
+
+### Single Board Computer 
+- Raspberry Pi 5
+
+### Motor Mechanics 
+- Motor Driver 
+- Track Style Chassis 
+- high torque motors 
+- Servo Motor
+- Suspension
+
+### Camera
+ - IR + Thermal + Night vision 
+
+### Communication 
+- Wired
+- LoRa (Backup)
+- Bluetooth (Backup)
+- Wifi 2.4G (Backup)
 
 The rover acts as a local access-point server and exposes a simple dashboard at the network address 192.168.4.1.
 
