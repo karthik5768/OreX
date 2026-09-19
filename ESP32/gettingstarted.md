@@ -9,7 +9,7 @@
 
 ### 2. Open the Project
 
-Open the [ESP32](ESP32) folder as a PlatformIO project.
+Open the [ESP32](~/OreX/ESP32) folder as a PlatformIO project.
 
 ### 3. Build the Firmware
 
