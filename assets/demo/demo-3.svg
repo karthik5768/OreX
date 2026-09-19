@@ -1,0 +1,10 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" fill="#FEF3C7"/>
+  <rect x="90" y="120" width="1020" height="560" rx="24" fill="#FFF7ED"/>
+  <path d="M180 510C280 420 365 430 468 512C562 588 661 585 734 500C848 381 966 410 1020 480V600H180V510Z" fill="#22C55E" fill-opacity="0.2"/>
+  <rect x="200" y="200" width="350" height="220" rx="18" fill="#0F172A"/>
+  <rect x="620" y="230" width="340" height="26" rx="13" fill="#0F172A"/>
+  <rect x="620" y="290" width="260" height="22" rx="11" fill="#F59E0B"/>
+  <rect x="620" y="330" width="220" height="22" rx="11" fill="#0B5FFF"/>
+  <text x="600" y="720" text-anchor="middle" fill="#0F172A" font-family="Arial, sans-serif" font-size="54" font-weight="700">Demo Photo 3</text>
+</svg>

@@ -1,0 +1,9 @@
+<svg width="420" height="220" viewBox="0 0 420 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="420" height="220" rx="24" fill="#0F172A"/>
+  <circle cx="110" cy="110" r="60" fill="#22C55E"/>
+  <path d="M84 111L102 129L141 90" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="178" y="58" width="180" height="26" rx="13" fill="#F8FAFC"/>
+  <rect x="178" y="98" width="150" height="22" rx="11" fill="#38BDF8"/>
+  <rect x="178" y="134" width="130" height="22" rx="11" fill="#F59E0B"/>
+  <text x="178" y="182" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="26" font-weight="700">OREX</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg width="640" height="180" viewBox="0 0 640 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="180" rx="18" fill="#F7F9FC"/>
+  <rect x="18" y="18" width="144" height="144" rx="24" fill="#0B5FFF"/>
+  <path d="M54 111V69H88C102.359 69 114 80.6406 114 95C114 109.359 102.359 121 88 121H54ZM76 92H86C91.5228 92 96 87.5228 96 82C96 76.4772 91.5228 72 86 72H76V92ZM122 111L98 69H122L130 88L138 69H162L138 111H122Z" fill="white"/>
+  <text x="192" y="78" fill="#0F172A" font-family="Arial, sans-serif" font-size="38" font-weight="700">SMART INDIA</text>
+  <text x="192" y="116" fill="#F59E0B" font-family="Arial, sans-serif" font-size="46" font-weight="800">HACKATHON</text>
+  <text x="192" y="148" fill="#475569" font-family="Arial, sans-serif" font-size="20" font-weight="600">SIH 2026 • Innovation • Impact</text>
+</svg>
