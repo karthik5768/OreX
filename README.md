@@ -95,6 +95,7 @@ We have the foundation for the actual prototype, which will use:
 
 ### Single Board Computer 
 - Raspberry Pi 5
+- 128GB SD-card
 
 ### Motor Mechanics 
 - Motor Driver 

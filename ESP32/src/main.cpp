@@ -2,6 +2,7 @@
 #include <DHT.h>
 #include <WebServer.h>
 #include <WiFi.h>
+#include "web_ui.h"
 
 namespace Pins {
 constexpr uint8_t mq2 = 1;
@@ -139,14 +140,7 @@ void handleCommand() {
 }
 
 void handleRoot() {
-  server.send(200, "text/html", R"HTML(
-<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OreX Rover</title><style>body{font-family:system-ui;max-width:620px;margin:2rem auto;padding:0 1rem;background:#101820;color:#eef2f3}button{padding:.7rem;margin:.2rem;border:0;border-radius:.4rem;font-weight:600}pre{background:#1c2a33;padding:1rem;border-radius:.5rem;white-space:pre-wrap}.drive{background:#f3b562}.stop{background:#e56b6f;color:white}</style></head>
-<body><h1>OreX Rover</h1><p>AP: <b>OreX-Rover</b> &middot; IP: <b>192.168.4.1</b></p>
-<button class="drive" onclick="cmd('auto')">AUTO</button><button class="stop" onclick="cmd('stop')">STOP</button><hr>
-<button onclick="cmd('forward')">FORWARD</button><button onclick="cmd('backward')">BACKWARD</button><button onclick="cmd('left')">LEFT</button><button onclick="cmd('right')">RIGHT</button>
-<pre id="data">Loading...</pre><script>async function cmd(c){await fetch('/api/command?cmd='+c,{method:'POST'});load()}async function load(){let r=await fetch('/api/data');document.querySelector('#data').textContent=JSON.stringify(await r.json(),null,2)}setInterval(load,2000);load()</script></body></html>
-)HTML");
+  server.send(200, "text/html", INDEX_HTML);
 }
 
 void updateAutonomousDrive() {
