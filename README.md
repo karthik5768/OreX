@@ -1,7 +1,7 @@
 # OreX — Mine Safety Rover
 
 <div align="center">
-  <img src="assets/sih-logo.svg" alt="Smart India Hackathon Logo" width="700" />
+  <img src="assets/sihlogo.jpg" alt="Smart India Hackathon Logo" width="700" />
 </div>
 
 OreX is a smart mine safety rover designed by team OreX. We are a team of 6 first year students across vaious branches. The rover helps improve mine worker safety by monitoring hazardous gases, detecting nearby anomalies, and enabling remote or autonomous rover navigation in risky underground environments. OreX Rover acts as the first responder and goes into the mine first before any human worker to ensure safety.
@@ -231,14 +231,14 @@ This project is being developed for the Smart India Hackathon initiative for SIH
 OreX in action
 
 <div align="center">
-  <img src="assets/demo/demo-1.svg" alt="Demo Photo 1" width="900" />
+  <img src="assets/demo/V0.5-1.jpeg" alt="Demo Photo 1" width="900" />
   <br /><br />
-  <img src="assets/demo/demo-2.svg" alt="Demo Photo 2" width="900" />
+  <img src="assets/demo/V0.5-2.jpeg" alt="Demo Photo 2" width="900" />
   <br /><br />
-  <img src="assets/demo/demo-3.svg" alt="Demo Photo 3" width="900" />
+  <img src="assets/demo/V0.5-3.jpeg" alt="Demo Photo 3" width="900" />
 </div>
 
-> Replace the SVG placeholders in the [assets/demo](assets/demo) folder with real photos of the rover, testing setup, or field demonstration.
+> Version 0.5 Prototype- Collects sensor data and acts as a wifi access point(ESP32) to create a webserver and display data
 
 ---
 
