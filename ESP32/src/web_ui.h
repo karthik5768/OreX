@@ -183,9 +183,23 @@ const char INDEX_HTML[] PROGMEM = R"rawlLiteral(
         color: #fff;
       }
 
+      .alarm {
+        background: linear-gradient(135deg, #fbbf24, #f97316);
+        color: #241000;
+      }
+
+      .alarm.active {
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+        color: #fff;
+      }
+
       .control-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(70px, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-areas:
+          ". forward ."
+          "left . right"
+          ". backward .";
         gap: 10px;
       }
 
@@ -195,9 +209,11 @@ const char INDEX_HTML[] PROGMEM = R"rawlLiteral(
         color: var(--text);
       }
 
-      .dir-btn:nth-child(2) { grid-column: 2; }
-      .dir-btn:nth-child(3) { grid-column: 1; }
-      .dir-btn:nth-child(4) { grid-column: 3; }
+      .dir-btn { min-width: 0; touch-action: none; }
+      .dir-btn[data-cmd="forward"] { grid-area: forward; }
+      .dir-btn[data-cmd="left"] { grid-area: left; }
+      .dir-btn[data-cmd="right"] { grid-area: right; }
+      .dir-btn[data-cmd="backward"] { grid-area: backward; }
 
       .sensor-grid {
         display: grid;
@@ -258,6 +274,17 @@ const char INDEX_HTML[] PROGMEM = R"rawlLiteral(
         .button-stack {
           grid-template-columns: 1fr 1fr;
         }
+
+        .control-grid {
+          gap: 8px;
+        }
+
+        .dir-btn {
+          padding-left: 6px;
+          padding-right: 6px;
+          font-size: 0.8rem;
+          letter-spacing: 0.02em;
+        }
       }
     </style>
   </head>
@@ -305,17 +332,19 @@ const char INDEX_HTML[] PROGMEM = R"rawlLiteral(
           <div class="button-stack">
             <button class="primary" data-cmd="auto">AUTO</button>
             <button class="danger" data-cmd="stop">STOP</button>
+            <button class="alarm" data-cmd="alarm" aria-pressed="false">ALARM</button>
           </div>
         </div>
 
         <div class="card">
           <h2 class="card-title">Manual Drive</h2>
           <div class="control-grid">
-            <button class="dir-btn" data-cmd="forward">FORWARD</button>
-            <button class="dir-btn" data-cmd="left">LEFT</button>
-            <button class="dir-btn" data-cmd="right">RIGHT</button>
-            <button class="dir-btn" data-cmd="backward">BACKWARD</button>
+            <button class="dir-btn" data-cmd="forward" data-drive>FORWARD</button>
+            <button class="dir-btn" data-cmd="left" data-drive>LEFT</button>
+            <button class="dir-btn" data-cmd="right" data-drive>RIGHT</button>
+            <button class="dir-btn" data-cmd="backward" data-drive>BACKWARD</button>
           </div>
+          <div class="subtext">PIR motion sensing works only while the rover is at HALT.</div>
         </div>
       </section>
 
@@ -349,6 +378,12 @@ const char INDEX_HTML[] PROGMEM = R"rawlLiteral(
           <div id="status" class="value">OK</div>
           <span class="unit">Live</span>
         </div>
+
+        <div class="card metric">
+          <div class="label">PIR Motion</div>
+          <div id="pir" class="value">OFF</div>
+          <span class="unit">Halt only</span>
+        </div>
       </section>
 
       <div class="card raw-panel">
@@ -370,6 +405,9 @@ const char INDEX_HTML[] PROGMEM = R"rawlLiteral(
       const mq7El = document.getElementById('mq7');
       const uptimeEl = document.getElementById('uptime');
       const statusEl = document.getElementById('status');
+      const pirEl = document.getElementById('pir');
+      const alarmButton = document.querySelector('[data-cmd="alarm"]');
+      let driveTimer;
 
       function setMode(mode) {
         const value = String(mode || 'stop').toUpperCase();
@@ -412,6 +450,11 @@ const char INDEX_HTML[] PROGMEM = R"rawlLiteral(
         mq4El.textContent = data.mq4 ?? '--';
         mq7El.textContent = data.mq7 ?? '--';
         uptimeEl.textContent = data.uptimeMs ?? '--';
+        pirEl.textContent = data.pirEnabled ? (data.pirMotion ? 'MOTION' : 'CLEAR') : 'HALT ONLY';
+        pirEl.classList.toggle('mode-bad', !!data.pirMotion);
+        alarmButton.classList.toggle('active', !!data.alarmEnabled);
+        alarmButton.setAttribute('aria-pressed', String(!!data.alarmEnabled));
+        alarmButton.textContent = data.alarmEnabled ? 'ALARM ON' : 'ALARM';
 
         if (data.obstacle) {
           statusEl.textContent = 'ALERT';
@@ -420,11 +463,21 @@ const char INDEX_HTML[] PROGMEM = R"rawlLiteral(
           statusEl.textContent = 'OK';
           statusEl.classList.remove('mode-bad');
         }
+
+        if (data.pirEnabled && data.pirMotion) {
+          statusEl.textContent = 'MOTION';
+          statusEl.classList.add('mode-bad');
+        }
       }
 
       async function cmd(command) {
-        await fetch('/api/command?cmd=' + command, { method: 'POST' });
-        await loadData();
+        try {
+          const response = await fetch('/api/command?cmd=' + command, { method: 'POST' });
+          if (!response.ok) throw new Error(await response.text());
+          if (command === 'alarm') await loadData();
+        } catch (error) {
+          rawDataEl.textContent = 'Command failed: ' + error.message;
+        }
       }
 
       async function loadData() {
@@ -439,7 +492,26 @@ const char INDEX_HTML[] PROGMEM = R"rawlLiteral(
         }
       }
 
-      document.querySelectorAll('[data-cmd]').forEach((button) => {
+      document.querySelectorAll('[data-drive]').forEach((button) => {
+        const startDrive = (event) => {
+          event.preventDefault();
+          button.setPointerCapture(event.pointerId);
+          clearInterval(driveTimer);
+          cmd(button.dataset.cmd);
+          driveTimer = setInterval(() => cmd(button.dataset.cmd), 250);
+        };
+        const stopDrive = (event) => {
+          event.preventDefault();
+          clearInterval(driveTimer);
+          driveTimer = undefined;
+          cmd('stop');
+        };
+        button.addEventListener('pointerdown', startDrive);
+        button.addEventListener('pointerup', stopDrive);
+        button.addEventListener('pointercancel', stopDrive);
+      });
+
+      document.querySelectorAll('[data-cmd]:not([data-drive])').forEach((button) => {
         button.addEventListener('click', () => cmd(button.dataset.cmd));
       });
 
