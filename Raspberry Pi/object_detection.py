@@ -13,7 +13,7 @@ IMAGE_WIDTH = 320
 IMAGE_HEIGHT = 240
 
 # --- Initialize MediaPipe Object Detector ---
-print("Loading TFLite Model via MediaPipe Tasks API...")
+print("Loading TFLite Model via MediaPipe Tasks API---")
 base_options = python.BaseOptions(model_asset_path=MODEL_PATH)
 options = vision.ObjectDetectorOptions(
     base_options=base_options,
@@ -30,7 +30,7 @@ if not cap.isOpened():
     print("Error: Could not open camera feed.")
     exit()
 
-print("Headless Object Detection Running. Press Ctrl+C to exit...")
+print("Headless Object Detection Running. Press Ctrl+C to exit.")
 
 frame_count = 0
 start_time = time.time()
@@ -67,7 +67,7 @@ try:
             print(f"--- Running at {frame_count / elapsed:.2f} FPS ---")
 
 except KeyboardInterrupt:
-    print("\nStopping detection stream...")
+    print("\nStopping detection stream.")
 
 finally:
     cap.release()
