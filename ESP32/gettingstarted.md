@@ -60,6 +60,11 @@ The same interface can send control commands such as:
 - BACKWARD
 - LEFT
 - RIGHT
+- ALARM
+
+Alaram is toggle-able.
+PIR sensor intentionally works only when the rover is stopped.
+Its dashboard shows `HALT ONLY` while the rover is moving.
 
 ---
 
@@ -96,6 +101,7 @@ POST /api/command?cmd=forward
 POST /api/command?cmd=stop
 POST /api/command?cmd=auto
 POST /api/command?cmd=left
+POST /api/command?cmd=alarm
 ```
 
 Supported commands:
@@ -106,6 +112,7 @@ Supported commands:
 - backward
 - left
 - right
+- alarm
 
 ---
 ## Sensor Interpretation
@@ -115,6 +122,7 @@ Supported commands:
 - MQ7: carbon monoxide detection
 - DHT11: ambient temperature and relative humidity
 - Ultrasonic sensor: object distance in centimeters
+- PIR sensor: motion detection while the rover is stopped (To detect workers in low light visibility)
 
 ---
 
