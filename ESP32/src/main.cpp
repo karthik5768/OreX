@@ -17,6 +17,8 @@ constexpr uint8_t leftIn2 = 12;
 constexpr uint8_t rightEnable = 13;
 constexpr uint8_t rightIn1 = 14;
 constexpr uint8_t rightIn2 = 15;
+constexpr uint8_t pir = 16;
+constexpr uint8_t buzzer = 17;
 }
 
 constexpr char AP_SSID[] = "OreX-Rover";
@@ -30,6 +32,10 @@ constexpr uint32_t PWM_FREQUENCY = 20000;
 constexpr uint8_t PWM_RESOLUTION = 8;
 constexpr uint8_t LEFT_PWM_CHANNEL = 0;
 constexpr uint8_t RIGHT_PWM_CHANNEL = 1;
+constexpr uint8_t BUZZER_PWM_CHANNEL = 2;
+constexpr uint16_t BUZZER_FREQUENCY = 2200;
+constexpr uint32_t ALARM_BEEP_MS = 350;
+constexpr uint32_t ALARM_SILENCE_MS = 350;
 
 DHT dht(Pins::dht, DHT11);
 WebServer server(HTTP_PORT);
@@ -44,6 +50,8 @@ struct SensorData {
   float temperature = NAN;
   float humidity = NAN;
   long distanceCm = -1;
+  bool pirMotion = false;
+  bool pirEnabled = false;
   uint32_t updatedAt = 0;
 };
 
@@ -52,6 +60,9 @@ uint32_t lastSensorRead = 0;
 uint32_t lastObstacleRead = 0;
 uint32_t lastManualCommand = 0;
 bool obstacleDetected = false;
+bool alarmEnabled = false;
+bool alarmBuzzerOn = false;
+uint32_t alarmPhaseStarted = 0;
 
 void setMotor(uint8_t pwmChannel, uint8_t in1, uint8_t in2, int speed) {
   speed = constrain(speed, -255, 255);
@@ -67,6 +78,42 @@ void drive(int leftSpeed, int rightSpeed) {
 
 void stopMotors() {
   drive(0, 0);
+}
+
+void stopBuzzer() {
+  ledcWrite(BUZZER_PWM_CHANNEL, 0);
+}
+
+void updateAlarm(uint32_t now) {
+  if (!alarmEnabled) {
+    if (alarmBuzzerOn) {
+      alarmBuzzerOn = false;
+      stopBuzzer();
+    }
+    return;
+  }
+
+  const uint32_t phaseDuration = alarmBuzzerOn ? ALARM_BEEP_MS : ALARM_SILENCE_MS;
+  if (now - alarmPhaseStarted < phaseDuration) return;
+
+  alarmPhaseStarted = now;
+  alarmBuzzerOn = !alarmBuzzerOn;
+  if (alarmBuzzerOn) {
+    ledcWrite(BUZZER_PWM_CHANNEL, 128);
+  } else {
+    stopBuzzer();
+  }
+}
+
+void setAlarm(bool enabled) {
+  alarmEnabled = enabled;
+  alarmBuzzerOn = enabled;
+  alarmPhaseStarted = millis();
+  if (enabled) {
+    ledcWrite(BUZZER_PWM_CHANNEL, 128);
+  } else {
+    stopBuzzer();
+  }
 }
 
 long measureDistanceCm() {
@@ -89,6 +136,8 @@ void readSensors() {
   const float temperature = dht.readTemperature();
   if (!isnan(humidity)) sensors.humidity = humidity;
   if (!isnan(temperature)) sensors.temperature = temperature;
+  sensors.pirEnabled = driveMode == DriveMode::Stop;
+  sensors.pirMotion = sensors.pirEnabled && digitalRead(Pins::pir) == HIGH;
   sensors.updatedAt = millis();
 }
 
@@ -107,6 +156,9 @@ void handleData() {
   body += "\"mode\":\"" + modeName() + "\",";
   body += "\"distanceCm\":" + String(sensors.distanceCm) + ",";
   body += "\"obstacle\":" + String(obstacleDetected ? "true" : "false") + ",";
+  body += "\"pirEnabled\":" + String(sensors.pirEnabled ? "true" : "false") + ",";
+  body += "\"pirMotion\":" + String(sensors.pirMotion ? "true" : "false") + ",";
+  body += "\"alarmEnabled\":" + String(alarmEnabled ? "true" : "false") + ",";
   body += "\"mq2\":" + String(sensors.mq2) + ",";
   body += "\"mq4\":" + String(sensors.mq4) + ",";
   body += "\"mq7\":" + String(sensors.mq7) + ",";
@@ -122,11 +174,17 @@ void handleCommand() {
 
   if (command == "auto") {
     driveMode = DriveMode::Auto;
+    sensors.pirEnabled = false;
+    sensors.pirMotion = false;
   } else if (command == "stop") {
     driveMode = DriveMode::Stop;
     stopMotors();
+  } else if (command == "alarm") {
+    setAlarm(!alarmEnabled);
   } else if (command == "forward" || command == "backward" || command == "left" || command == "right") {
     driveMode = DriveMode::Manual;
+    sensors.pirEnabled = false;
+    sensors.pirMotion = false;
     if (command == "forward") drive(200, 200);
     if (command == "backward") drive(-200, -200);
     if (command == "left") drive(-180, 180);
@@ -164,11 +222,16 @@ void setup() {
   pinMode(Pins::leftIn2, OUTPUT);
   pinMode(Pins::rightIn1, OUTPUT);
   pinMode(Pins::rightIn2, OUTPUT);
+  pinMode(Pins::pir, INPUT);
+  pinMode(Pins::buzzer, OUTPUT);
   ledcSetup(LEFT_PWM_CHANNEL, PWM_FREQUENCY, PWM_RESOLUTION);
   ledcSetup(RIGHT_PWM_CHANNEL, PWM_FREQUENCY, PWM_RESOLUTION);
+  ledcSetup(BUZZER_PWM_CHANNEL, BUZZER_FREQUENCY, PWM_RESOLUTION);
   ledcAttachPin(Pins::leftEnable, LEFT_PWM_CHANNEL);
   ledcAttachPin(Pins::rightEnable, RIGHT_PWM_CHANNEL);
+  ledcAttachPin(Pins::buzzer, BUZZER_PWM_CHANNEL);
   stopMotors();
+  stopBuzzer();
 
   analogReadResolution(12);
   dht.begin();
@@ -193,6 +256,7 @@ void loop() {
     lastSensorRead = now;
     readSensors();
   }
+  updateAlarm(now);
   if (now - lastObstacleRead >= OBSTACLE_INTERVAL_MS) {
     lastObstacleRead = now;
     sensors.distanceCm = measureDistanceCm();
