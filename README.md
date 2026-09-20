@@ -230,15 +230,26 @@ This project is being developed for the Smart India Hackathon initiative for SIH
 
 OreX in action
 
-<div align="center">
-  <img src="assets/demo/V0.5-1.jpeg" alt="Demo Photo 1" width="900" />
-  <br /><br />
-  <img src="assets/demo/V0.5-2.jpeg" alt="Demo Photo 2" width="900" />
-  <br /><br />
-  <img src="assets/demo/V0.5-3.jpeg" alt="Demo Photo 3" width="900" />
-</div>
+<table>
+   <tr>
+      <td><img src="assets/demo/V0.5-1.jpeg" alt="Demo Photo 1" width="280" /></td>
+      <td><img src="assets/demo/V0.5-2.jpeg" alt="Demo Photo 2" width="280" /></td>
+      <td><img src="assets/demo/V0.5-3.jpeg" alt="Demo Photo 3" width="280" /></td>
+   </tr>
+</table>
 
 > Version 0.5 Prototype- Collects sensor data and acts as a wifi access point(ESP32) to create a webserver and display data
+
+### Prototype V1
+
+<table>
+   <tr>
+      <td><img src="assets/V1%20Prototype/Top.jpeg" alt="Prototype V1 top view" width="220" /></td>
+      <td><img src="assets/V1%20Prototype/Right.jpeg" alt="Prototype V1 right view" width="220" /></td>
+      <td><img src="assets/V1%20Prototype/Left.jpeg" alt="Prototype V1 left view" width="220" /></td>
+      <td><img src="assets/V1%20Prototype/Front.jpeg" alt="Prototype V1 front view" width="220" /></td>
+   </tr>
+</table>
 
 ---
 
@@ -247,3 +258,4 @@ OreX in action
 The repository currently contains the core ESP32 firmware for the rover prototype, including sensor reading, autonomous navigation logic, and a browser-based control interface.
 
 This is an active prototype and is continuously being extended with additional sensing, communication, and industrial deployment features.
+o
