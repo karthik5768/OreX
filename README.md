@@ -4,7 +4,7 @@
   <img src="assets/sihlogo.jpg" alt="Smart India Hackathon Logo" width="700" />
 </div>
 
-OreX is a smart mine safety rover designed by team OreX. We are a team of 6 first year students across vaious branches. The rover helps improve mine worker safety by monitoring hazardous gases, detecting nearby anomalies, and enabling remote or autonomous rover navigation in risky underground environments. OreX Rover acts as the first responder and goes into the mine first before any human worker to ensure safety.
+OreX is a smart mine safety rover designed by team OreX. We are a team of 6 first year students across vaious branches. The rover helps improve mine workers safety by monitoring hazardous gases, detecting nearby anomalies, and enabling remote or autonomous rover navigation in risky underground environments. OreX Rover acts as the first responder and goes into the mine first before any human worker to ensure safety.
 
 This repository contains the embedded control system for the rover, obstacle detection by raspberry pi and other basic information about the project. The system can operate in autonomous mode for safe pathing or manual mode through a lightweight web UI.
 
